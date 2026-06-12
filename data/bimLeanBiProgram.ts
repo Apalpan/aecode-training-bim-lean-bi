@@ -19,6 +19,10 @@ export type BimLeanBiModule = {
   question: string;
   objective: string;
   deliverable: string;
+  finalWork: string;
+  skills: string[];
+  competencies: string[];
+  certificationCriterion: string;
   tools: string[];
   units: BimLeanBiUnit[];
 };
@@ -30,7 +34,7 @@ export const bimLeanBiProgram = {
   shortName: "BIM, Lean, BI e IA para Control de Obra",
   claim: "Planificar. Automatizar. Integrar. Decidir con datos.",
   promise:
-    "Aprende a controlar obra con trazabilidad, modelos BIM, CDE, Lean Construction, dashboards ejecutivos e IA aplicada a seguimiento real.",
+    "Aprende a controlar obra con trazabilidad, modelos BIM, CDE, Lean Construction, dashboards ejecutivos, Autodesk Forma e IA aplicada a seguimiento real.",
   hours: 90,
   format: "En vivo",
   practicalMix: "70% practico / 30% estrategico",
@@ -48,10 +52,19 @@ export const bimLeanBiProgram = {
   ],
   metrics: [
     { value: "90h", label: "en vivo para practicar, integrar y validar entregables" },
-    { value: "4", label: "modulos conectados por un proyecto integrador" },
-    { value: "12+", label: "talleres con IA aplicada a obra y oficina tecnica" },
-    { value: "1", label: "portafolio final con BIM, CDE, BI, IA y evidencia" }
+    { value: "3+1", label: "modulos troncales mas integracion final evaluable" },
+    { value: "4", label: "trabajos finales de modulo para certificar progreso" },
+    { value: "3/4", label: "modulos aprobados como minimo para certificacion global" }
   ],
+  academicStructure: {
+    label: "3 modulos troncales + 1 modulo integrador",
+    description:
+      "El diplomado se organiza en tres bloques academicos principales y un bloque final de integracion. Cada bloque cierra con un trabajo final evaluable.",
+    globalCertificationRule:
+      "Para obtener la certificacion global, el participante debe aprobar por lo menos 3 de los 4 modulos evaluables y presentar evidencia verificable.",
+    moduleCertificationRule:
+      "Cada modulo se valida con asistencia, participacion en taller, trabajo final de modulo y revision por rubrica AECODE."
+  },
   problems: [
     {
       title: "Informacion fragmentada",
@@ -92,6 +105,14 @@ export const bimLeanBiProgram = {
       objective:
         "Construir criterio metodologico para planificar, coordinar y controlar obra usando BIM, Lean Construction y VDC.",
       deliverable: "Cronograma + matriz POP + primera version de BEP aplicado a un caso real.",
+      finalWork: "BEP inicial de obra + matriz POP + mapa de compromisos ICE para un caso aplicado.",
+      skills: ["Gobernanza BIM", "Planificacion Lean", "Coordinacion VDC", "Minutas y compromisos ICE"],
+      competencies: [
+        "Define roles y flujos de informacion bajo ISO 19650.",
+        "Convierte restricciones y compromisos en acciones trazables.",
+        "Explica el valor BIM Lean con lenguaje entendible para obra y gerencia."
+      ],
+      certificationCriterion: "Aprobado con BEP coherente, matriz POP completa y compromisos accionables.",
       tools: ["ISO 19650", "Guia BIM Peru", "Last Planner System", "VDC", "Matriz POP", "ChatGPT"],
       units: [
         {
@@ -155,6 +176,14 @@ export const bimLeanBiProgram = {
       objective:
         "Implementar un flujo de control con BEP, CDE, documentacion, modelos, incidencias, programacion y seguimiento operativo.",
       deliverable: "Flujo CDE + modelo coordinado + control de avance con datos integrados.",
+      finalWork: "Flujo CDE operativo + modelo preparado para control + matriz de incidencias y avance.",
+      skills: ["CDE operativo", "Control documental", "Modelado para seguimiento", "4D/5D y coordinacion", "Reporte semanal"],
+      competencies: [
+        "Organiza documentos, RFIs y submittals con trazabilidad.",
+        "Prepara modelos BIM para extraer datos utiles de avance, costo e incidencias.",
+        "Prioriza interferencias, restricciones y pendientes para reuniones de obra."
+      ],
+      certificationCriterion: "Aprobado con flujo CDE documentado, modelo trazable y reporte operativo entendible.",
       tools: ["Autodesk Construction Cloud", "Trimble Connect", "Revit", "Navisworks", "Presto", "Fieldwire", "ChatGPT"],
       units: [
         {
@@ -266,6 +295,14 @@ export const bimLeanBiProgram = {
       objective:
         "Modelar, limpiar, conectar y visualizar datos de obra para seguimiento ejecutivo, operativo y tecnico.",
       deliverable: "Dashboard BIM de obra con avance, costos, incidencias, productividad y lectura ejecutiva.",
+      finalWork: "Dashboard Power BI conectado a datos BIM/CDE con lectura ejecutiva y acciones sugeridas.",
+      skills: ["Arquitectura de datos", "Power Query", "DAX aplicado", "Dashboard BIM", "Visual management"],
+      competencies: [
+        "Estructura datos de obra para evitar tableros fragiles.",
+        "Construye KPIs de avance, costo, RFIs, restricciones y productividad.",
+        "Presenta informacion tecnica como decisiones claras para gerencia y obra."
+      ],
+      certificationCriterion: "Aprobado con dashboard funcional, modelo de datos consistente y narrativa ejecutiva.",
       tools: ["Power BI", "Power Query", "DAX", "ACC", "Revit", "Speckle", "Looker Studio"],
       units: [
         {
@@ -320,19 +357,27 @@ export const bimLeanBiProgram = {
     },
     {
       id: "m04",
-      title: "Tecnologias para Seguimiento en Obra",
-      shortTitle: "IA y emergentes",
+      title: "Modulo Integrador: IA, Automatizacion y Evidencia Final",
+      shortTitle: "Integracion final",
       hours: 12,
-      level: "Escalamiento",
-      focus: "IA, automatizacion y evidencia visual",
-      question: "Como integrar IA y tecnologias emergentes sin caer en pilotos aislados?",
+      level: "Cierre certificable",
+      focus: "IA, Autodesk Forma, automatizacion y evidencia",
+      question: "Como cerrar el diplomado con un sistema integrado, entendible y verificable?",
       objective:
-        "Aplicar asistentes, agentes, automatizaciones, RA/RV, nubes de puntos y reportes web al seguimiento de obra.",
-      deliverable: "Asistente IA + reporte web integrado para seguimiento de obra.",
-      tools: ["ChatGPT", "n8n", "Zapier", "APIs", "RA/RV", "Nubes de puntos", "Power BI"],
+        "Integrar asistentes, automatizaciones, Autodesk Forma, evidencia visual y reporte web para presentar un caso final de seguimiento de obra.",
+      deliverable: "Asistente IA + reporte web integrado + expediente final de evidencias para certificacion global.",
+      finalWork: "Caso final BIM + Lean + BI + IA con reporte web, dashboard, evidencia y defensa tecnica.",
+      skills: ["Asistente IA de obra", "Automatizacion de alertas", "Autodesk Forma", "Evidencia visual", "Reporte web final"],
+      competencies: [
+        "Disena flujos IA con control humano y trazabilidad.",
+        "Conecta alertas, datos, evidencias y reporte ejecutivo sin duplicar informacion.",
+        "Defiende un caso final integrando metodologia, herramientas y decisiones."
+      ],
+      certificationCriterion: "Aprobado con caso final sustentado, evidencia completa y reporte claro para decision.",
+      tools: ["ChatGPT", "n8n", "Zapier", "APIs", "Autodesk Forma", "RA/RV", "Nubes de puntos", "Power BI"],
       units: [
         {
-          title: "Asistentes GPT para obra y oficina tecnica",
+          title: "Asistentes IA para obra y oficina tecnica",
           hours: 3,
           capsules: [
             "Casos de uso: RFIs, minutas, restricciones, reportes y consultas documentales.",
@@ -359,19 +404,19 @@ export const bimLeanBiProgram = {
           ],
           workshop: {
             title: "Agente de seguimiento",
-            description: "Diseñar un flujo que detecta pendientes, redacta alerta y escala al responsable.",
+            description: "Disenar un flujo que detecta pendientes, redacta alerta y escala al responsable.",
             aiUse: "IA para clasificar intenciones y redactar mensajes de seguimiento."
           }
         },
         {
-          title: "RA/RV, escaneo 3D y nubes de puntos",
+          title: "Autodesk Forma, RA/RV, escaneo 3D y nubes de puntos",
           hours: 3,
           capsules: [
+            "Autodesk Forma para exploracion temprana, contexto y decisiones iniciales.",
             "RA/RV para visualizacion, coordinacion e induccion.",
             "Escaneo laser, fotogrametria y captura 360.",
             "Modelo BIM vs realidad capturada.",
-            "Evidencia geometrica para avance y as-built.",
-            "Criterios para adoptar tecnologia sin sobredimensionar."
+            "Evidencia geometrica para avance, as-built y control visual."
           ],
           workshop: {
             title: "Comparacion modelo vs realidad",
@@ -401,7 +446,7 @@ export const bimLeanBiProgram = {
   capstone: {
     title: "Proyecto integrador BIM + Lean + BI + IA",
     description:
-      "El participante trabaja un caso de obra donde debe ordenar informacion, definir BEP, estructurar CDE, controlar con modelo BIM, construir dashboard y presentar un reporte asistido por IA.",
+      "El participante trabaja un caso de obra donde debe ordenar informacion, definir BEP, estructurar CDE, controlar con modelo BIM, usar datos de Autodesk Forma cuando aplique, construir dashboard y presentar un reporte asistido por IA.",
     outputs: [
       "BEP operativo",
       "Flujo CDE y matriz documental",
@@ -414,8 +459,8 @@ export const bimLeanBiProgram = {
   },
   certifications: [
     {
-      title: "Certificacion AECODE",
-      detail: "Validacion de ruta, evidencias, talleres y proyecto integrador."
+      title: "Certificacion AECODE Training",
+      detail: "Validacion de ruta, evidencias, talleres, trabajos finales de modulo y proyecto integrador."
     },
     {
       title: "Certificacion Autodesk Training Center",
@@ -426,8 +471,8 @@ export const bimLeanBiProgram = {
       detail: "Reconocimiento nacional segun condiciones oficiales de la edicion."
     },
     {
-      title: "04 certificados segun brochure",
-      detail: "Nombres finales y alcance exacto deben confirmarse antes de publicacion comercial."
+      title: "Regla de aprobacion global",
+      detail: "Para la certificacion global se debe aprobar por lo menos 3 de los 4 modulos evaluables."
     }
   ],
   faqs: [
@@ -444,7 +489,7 @@ export const bimLeanBiProgram = {
     {
       question: "Que herramientas debo preparar?",
       answer:
-        "Revit, Navisworks, Autodesk Construction Cloud, Trimble Connect, Power BI, Excel o Sheets. Algunas herramientas pueden usarse segun disponibilidad de la cohorte."
+        "Revit, Navisworks, Autodesk Construction Cloud, Autodesk Forma, Trimble Connect, Power BI, Excel o Sheets. Algunas herramientas pueden usarse segun disponibilidad de la cohorte."
     },
     {
       question: "Como se integra la IA?",
@@ -454,7 +499,12 @@ export const bimLeanBiProgram = {
     {
       question: "Que evidencia tendre al final?",
       answer:
-        "Un portafolio con BEP, flujo CDE, modelo coordinado, dashboard BI, reporte ejecutivo y asistente o automatizacion aplicada."
+        "Un portafolio con trabajos finales de modulo: BEP, flujo CDE, modelo coordinado, dashboard BI, reporte ejecutivo y asistente o automatizacion aplicada."
+    },
+    {
+      question: "Como se aprueba la certificacion global?",
+      answer:
+        "Cada modulo tiene un trabajo final evaluable. Para la certificacion global debes aprobar por lo menos 3 de los 4 modulos y presentar evidencia verificable."
     },
     {
       question: "Donde se confirma inversion y matricula?",

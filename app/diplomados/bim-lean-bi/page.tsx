@@ -34,9 +34,16 @@ const asset = (path: string) => `${basePath}${path}`;
 const moduleIcons = [Layers3, Workflow, BarChart3, BrainCircuit];
 
 type BimLeanBiModuleView = (typeof bimLeanBiProgram.modules)[number];
+type ViewMode = "temario" | "skills" | "evaluacion";
+
+const viewModes: Array<{ id: ViewMode; label: string; description: string }> = [
+  { id: "temario", label: "Temario", description: "Unidades, capsulas y talleres" },
+  { id: "skills", label: "Skills", description: "Habilidades y competencias" },
+  { id: "evaluacion", label: "Evaluacion", description: "Trabajo final y certificacion" }
+];
 
 const signalNodes = [
-  { x: 50, y: 50, size: 68, tone: "gold", label: "90h", delay: 0 },
+  { x: 50, y: 50, size: 68, tone: "lime", label: "90h", delay: 0 },
   { x: 24, y: 28, size: 20, tone: "cyan", label: "BEP", delay: 0.2 },
   { x: 34, y: 68, size: 26, tone: "green", label: "CDE", delay: 0.4 },
   { x: 68, y: 32, size: 30, tone: "cyan", label: "BI", delay: 0.6 },
@@ -44,7 +51,7 @@ const signalNodes = [
   { x: 18, y: 55, size: 16, tone: "green", label: "", delay: 1.1 },
   { x: 42, y: 22, size: 14, tone: "green", label: "", delay: 1.4 },
   { x: 61, y: 78, size: 18, tone: "cyan", label: "", delay: 1.7 },
-  { x: 83, y: 43, size: 16, tone: "gold", label: "", delay: 2 },
+  { x: 83, y: 43, size: 16, tone: "lime", label: "", delay: 2 },
   { x: 30, y: 44, size: 12, tone: "cyan", label: "", delay: 2.2 },
   { x: 58, y: 24, size: 12, tone: "green", label: "", delay: 2.4 },
   { x: 70, y: 54, size: 12, tone: "green", label: "", delay: 2.6 }
@@ -70,6 +77,7 @@ const normalizeSearch = (value: string) =>
 export default function BimLeanBiDiplomadoPage() {
   const [query, setQuery] = useState("");
   const [activeModuleId, setActiveModuleId] = useState<string>(bimLeanBiProgram.modules[0].id);
+  const [viewMode, setViewMode] = useState<ViewMode>("temario");
   const search = normalizeSearch(query);
 
   const filteredModules = useMemo(() => {
@@ -84,6 +92,10 @@ export default function BimLeanBiDiplomadoPage() {
           module.question,
           module.objective,
           module.deliverable,
+          module.finalWork,
+          module.skills.join(" "),
+          module.competencies.join(" "),
+          module.certificationCriterion,
           module.tools.join(" "),
           module.units
             .map((unit) =>
@@ -108,7 +120,8 @@ export default function BimLeanBiDiplomadoPage() {
     title: module.shortTitle,
     hours: module.hours,
     focus: module.focus,
-    deliverable: module.deliverable
+    deliverable: module.deliverable,
+    finalWork: module.finalWork
   }));
 
   const tools = Array.from(new Set(bimLeanBiProgram.modules.flatMap((module) => module.tools)));
@@ -119,17 +132,18 @@ export default function BimLeanBiDiplomadoPage() {
       <header className="sticky top-0 z-40 border-b border-[rgba(55,245,220,0.18)] bg-[#020706]/85 backdrop-blur-xl print:hidden">
         <div className="mx-auto flex min-h-16 w-[min(1220px,calc(100%-28px))] items-center justify-between gap-4">
           <a className="flex items-center gap-3" href="#inicio" aria-label="AECODE Training">
-            <span className="grid h-10 w-10 place-items-center rounded-md border border-[rgba(25,255,122,0.28)] bg-[rgba(3,28,22,0.74)]">
-              <img src={asset("/aecode-logo.svg")} alt="" className="hud-logo-mark h-5 w-auto max-w-[32px] object-contain object-left" />
+            <span className="grid h-11 w-36 place-items-center rounded-md border border-[rgba(25,255,122,0.28)] bg-[rgba(3,28,22,0.74)] px-3">
+              <img src={asset("/aecode-logo.svg")} alt="AECODE" className="hud-logo-mark h-7 w-full object-contain object-left" />
             </span>
             <span className="hidden md:block">
-              <span className="block text-sm font-black uppercase tracking-[0.18em] text-[var(--hud-mint)]">AECODE</span>
-              <span className="block text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--hud-soft)]">Training OS / BIM Lean BI</span>
+              <span className="block text-sm font-black uppercase tracking-[0.18em] text-[var(--hud-mint)]">AECODE TRAINING</span>
+              <span className="block text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--hud-soft)]">Diplomado Internacional</span>
             </span>
           </a>
           <nav className="hidden items-center gap-1 rounded-md border border-[rgba(55,245,220,0.18)] bg-[rgba(3,28,22,0.7)] p-1 lg:flex">
             {[
               ["Ruta", "#ruta"],
+              ["Skills", "#skills"],
               ["Temario", "#temario"],
               ["Proyecto", "#proyecto"],
               ["Certificacion", "#certificacion"]
@@ -149,7 +163,7 @@ export default function BimLeanBiDiplomadoPage() {
             target="_blank"
             rel="noreferrer"
           >
-            AECODE.ai <ArrowUpRight className="h-4 w-4" />
+            Solicitar informacion <ArrowUpRight className="h-4 w-4" />
           </a>
         </div>
       </header>
@@ -163,17 +177,27 @@ export default function BimLeanBiDiplomadoPage() {
         />
         <div className="relative mx-auto grid min-h-[720px] w-[min(1220px,calc(100%-32px))] items-center gap-10 py-20 lg:grid-cols-[1.02fr_0.98fr]">
           <div>
+            <div className="mb-5 inline-flex items-center gap-3 rounded-lg border border-[rgba(25,255,122,0.26)] bg-[#020706]/70 px-4 py-3 backdrop-blur">
+              <img src={asset("/aecode-logo.svg")} alt="AECODE" className="hud-logo-mark h-8 w-36 object-contain object-left" />
+              <span className="hidden h-8 w-px bg-[rgba(55,245,220,0.22)] sm:block" />
+              <span className="hidden text-xs font-black uppercase tracking-[0.18em] text-[var(--hud-neon)] sm:block">AECODE TRAINING</span>
+            </div>
             <div className="hud-chip inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-black uppercase tracking-[0.12em]">
               <Sparkles className="h-4 w-4 text-[var(--hud-neon)]" />
-              {bimLeanBiProgram.format} / {bimLeanBiProgram.hours} horas / AECODE
+              AECODE TRAINING / {bimLeanBiProgram.format} / {bimLeanBiProgram.hours} horas
             </div>
+            <p className="mt-6 text-sm font-black uppercase tracking-[0.24em] text-[var(--hud-cyan)]">Diplomado Internacional</p>
             <h1 className="hud-glow-text mt-6 max-w-4xl text-5xl font-black leading-none text-white md:text-7xl">
-              BIM, Lean, BI e IA para controlar obra con evidencia.
+              BIM, Lean, BI e IA para control de obra verificable.
             </h1>
+            <p className="mt-4 max-w-3xl text-2xl font-black leading-tight text-[var(--hud-mint)]">
+              Seguimiento, datos, evidencias y certificacion por skills aplicadas.
+            </p>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--hud-muted)]">{bimLeanBiProgram.promise}</p>
             <div className="mt-6 flex flex-wrap gap-2">
-              <span className="hud-chip-gold rounded-md px-3 py-2 text-xs font-black uppercase tracking-[0.1em]">{bimLeanBiProgram.claim}</span>
+              <span className="hud-chip-accent rounded-md px-3 py-2 text-xs font-black uppercase tracking-[0.1em]">{bimLeanBiProgram.academicStructure.label}</span>
               <span className="hud-chip rounded-md px-3 py-2 text-xs font-black uppercase tracking-[0.1em]">{bimLeanBiProgram.practicalMix}</span>
+              <span className="hud-chip rounded-md px-3 py-2 text-xs font-black uppercase tracking-[0.1em]">Autodesk Forma + ACC + Power BI</span>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <a className="hud-button-primary inline-flex min-h-12 items-center gap-2 rounded-md px-5 font-black" href="#temario">
@@ -188,6 +212,9 @@ export default function BimLeanBiDiplomadoPage() {
                 Abrir clase magistral <ExternalLink className="h-4 w-4" />
               </a>
             </div>
+            <p className="mt-4 max-w-2xl text-sm font-semibold leading-6 text-[var(--hud-soft)]">
+              {bimLeanBiProgram.academicStructure.globalCertificationRule}
+            </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {bimLeanBiProgram.metrics.map((metric) => (
                 <article key={metric.value} className="hud-kpi rounded-lg p-4">
@@ -212,7 +239,7 @@ export default function BimLeanBiDiplomadoPage() {
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {bimLeanBiProgram.problems.map((problem, index) => (
               <article key={problem.title} className="hud-card rounded-lg p-5">
-                <span className="grid h-10 w-10 place-items-center rounded-md border border-[rgba(227,176,92,0.35)] bg-[rgba(217,130,51,0.12)] text-sm font-black text-[var(--hud-gold)]">
+                <span className="grid h-10 w-10 place-items-center rounded-md border border-[rgba(25,255,122,0.35)] bg-[rgba(25,255,122,0.12)] text-sm font-black text-[var(--hud-lime)]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <h3 className="mt-4 text-xl font-black text-white">{problem.title}</h3>
@@ -237,6 +264,46 @@ export default function BimLeanBiDiplomadoPage() {
                 <h3 className="mt-3 text-lg font-black text-white">{step}</h3>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="skills" className="py-16">
+        <div className="mx-auto w-[min(1220px,calc(100%-32px))]">
+          <SectionHeader
+            eyebrow="Skills que obtendras"
+            title="No es solo aprender herramientas: es demostrar competencias de control de obra."
+            description="Cada modulo deja habilidades aplicadas, evidencia y un trabajo final. La certificacion global exige aprobar por lo menos 3 de los 4 modulos evaluables."
+          />
+          <div className="mt-8 grid gap-4 lg:grid-cols-4">
+            {bimLeanBiProgram.modules.map((module, index) => {
+              const Icon = moduleIcons[index] ?? Layers3;
+              return (
+                <article key={module.id} className="hud-card rounded-lg p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="grid h-11 w-11 place-items-center rounded-md border border-[rgba(25,255,122,0.28)] bg-[#010604] text-[var(--hud-neon)]">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <span className="rounded-md border border-[rgba(25,255,122,0.26)] bg-[rgba(25,255,122,0.08)] px-2 py-1 text-xs font-black text-[var(--hud-neon)]">
+                      {module.hours}h
+                    </span>
+                  </div>
+                  <p className="mt-4 text-xs font-black uppercase tracking-[0.12em] text-[var(--hud-cyan)]">{module.shortTitle}</p>
+                  <h3 className="mt-2 text-xl font-black leading-tight text-white">{module.focus}</h3>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {module.skills.slice(0, 4).map((skill) => (
+                      <span key={skill} className="hud-chip rounded-md px-2 py-1 text-[11px] font-black">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="mt-4 rounded-lg border border-[rgba(55,245,220,0.18)] bg-[#020706]/70 p-3">
+                    <p className="text-[11px] font-black uppercase tracking-[0.12em] text-[var(--hud-mint)]">Trabajo final</p>
+                    <p className="mt-2 text-sm leading-5 text-[var(--hud-muted)]">{module.finalWork}</p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -268,12 +335,12 @@ export default function BimLeanBiDiplomadoPage() {
                       {module.id.toUpperCase()}
                     </span>
                     <strong className="text-sm leading-5 text-white">{module.shortTitle}</strong>
-                    <em className="text-right text-xs not-italic font-black text-[var(--hud-gold)]">{module.hours}h</em>
+                    <em className="text-right text-xs not-italic font-black text-[var(--hud-lime)]">{module.hours}h</em>
                   </a>
                 ))}
               </div>
-              <div className="mt-4 rounded-lg border border-[rgba(227,176,92,0.26)] bg-[rgba(217,130,51,0.1)] p-3">
-                <p className="text-xs font-black uppercase tracking-[0.1em] text-[var(--hud-gold)]">Validacion</p>
+              <div className="mt-4 rounded-lg border border-[rgba(25,255,122,0.26)] bg-[rgba(25,255,122,0.1)] p-3">
+                <p className="text-xs font-black uppercase tracking-[0.1em] text-[var(--hud-lime)]">Validacion</p>
                 <p className="mt-1 text-sm font-black text-white">{bimLeanBiTotalHours} horas totales</p>
                 <p className="mt-1 text-xs leading-5 text-[var(--hud-muted)]">Suma oficial: 15 + 42 + 21 + 12.</p>
               </div>
@@ -300,6 +367,23 @@ export default function BimLeanBiDiplomadoPage() {
                   Exportar PDF
                 </button>
               </div>
+              <div className="mb-5 grid gap-2 rounded-lg border border-[rgba(55,245,220,0.16)] bg-[#020706]/45 p-2 md:grid-cols-3 print:hidden">
+                {viewModes.map((mode) => (
+                  <button
+                    key={mode.id}
+                    className={`min-h-14 rounded-md border px-3 text-left transition ${
+                      viewMode === mode.id
+                        ? "border-[rgba(25,255,122,0.56)] bg-[rgba(25,255,122,0.12)] text-white shadow-[0_0_28px_rgba(25,255,122,0.09)]"
+                        : "border-transparent text-[var(--hud-muted)] hover:border-[rgba(55,245,220,0.28)] hover:bg-[rgba(55,245,220,0.06)]"
+                    }`}
+                    onClick={() => setViewMode(mode.id)}
+                    type="button"
+                  >
+                    <span className="block text-sm font-black uppercase tracking-[0.12em]">{mode.label}</span>
+                    <span className="mt-1 block text-xs leading-4">{mode.description}</span>
+                  </button>
+                ))}
+              </div>
 
               <div className="grid gap-5">
                 {filteredModules.map((module, index) => {
@@ -320,13 +404,13 @@ export default function BimLeanBiDiplomadoPage() {
                         <div>
                           <div className="flex flex-wrap gap-2">
                             <span className="hud-chip rounded-md px-2 py-1 text-xs font-black uppercase">{module.level}</span>
-                            <span className="hud-chip-gold rounded-md px-2 py-1 text-xs font-black uppercase">{module.focus}</span>
+                            <span className="hud-chip-accent rounded-md px-2 py-1 text-xs font-black uppercase">{module.focus}</span>
                           </div>
                           <h3 className="mt-3 text-3xl font-black leading-tight text-white">{module.title}</h3>
                           <p className="mt-2 text-sm font-semibold leading-6 text-[var(--hud-muted)]">{module.question}</p>
                         </div>
-                        <div className="rounded-lg border border-[rgba(227,176,92,0.32)] bg-[rgba(217,130,51,0.1)] p-3 text-center">
-                          <strong className="block text-4xl font-black text-[var(--hud-gold)]">{module.hours}</strong>
+                        <div className="rounded-lg border border-[rgba(25,255,122,0.32)] bg-[rgba(25,255,122,0.1)] p-3 text-center">
+                          <strong className="block text-4xl font-black text-[var(--hud-lime)]">{module.hours}</strong>
                           <span className="text-xs font-black uppercase text-[var(--hud-cream)]">horas</span>
                           <p className="mt-1 text-[11px] font-semibold text-[var(--hud-muted)]">Unidades: {unitHours}h</p>
                         </div>
@@ -337,6 +421,7 @@ export default function BimLeanBiDiplomadoPage() {
                           <InfoPanel label="Objetivo del modulo" value={module.objective} />
                           <InfoPanel label="Entregable claro" value={module.deliverable} highlight />
                         </div>
+                        <ModuleModePanel module={module} mode={viewMode} />
                         <div className="mt-4 flex flex-wrap gap-2">
                           {module.tools.map((tool) => (
                             <span key={tool} className="hud-chip rounded-md px-3 py-2 text-xs font-black">
@@ -354,7 +439,7 @@ export default function BimLeanBiDiplomadoPage() {
                                   </span>
                                   <h4 className="mt-3 text-xl font-black leading-tight text-white">{unit.title}</h4>
                                 </div>
-                                <span className="rounded-md border border-[rgba(227,176,92,0.35)] bg-[rgba(217,130,51,0.12)] px-2 py-1 text-xs font-black text-[var(--hud-gold)]">
+                                <span className="rounded-md border border-[rgba(25,255,122,0.35)] bg-[rgba(25,255,122,0.12)] px-2 py-1 text-xs font-black text-[var(--hud-lime)]">
                                   {unit.hours}h
                                 </span>
                               </div>
@@ -370,9 +455,9 @@ export default function BimLeanBiDiplomadoPage() {
                                 ))}
                               </ol>
                               <div className="mt-auto pt-4">
-                                <div className="rounded-lg border border-[rgba(227,176,92,0.35)] bg-[rgba(217,130,51,0.12)] p-4">
+                                <div className="rounded-lg border border-[rgba(25,255,122,0.35)] bg-[rgba(25,255,122,0.12)] p-4">
                                   <div className="flex items-center gap-2 text-sm font-black text-[var(--hud-cream)]">
-                                    <Bot className="h-4 w-4 text-[var(--hud-gold)]" />
+                                    <Bot className="h-4 w-4 text-[var(--hud-lime)]" />
                                     {unit.workshop.title}
                                   </div>
                                   <p className="mt-2 text-sm font-semibold leading-5 text-white/88">{unit.workshop.description}</p>
@@ -408,18 +493,20 @@ export default function BimLeanBiDiplomadoPage() {
             description="La matriz deja visible el foco de cada modulo y evita que el temario parezca una lista de software."
           />
           <div className="hud-panel mt-8 overflow-hidden rounded-lg">
-            <div className="grid grid-cols-[1.2fr_90px_1fr_1.4fr] border-b border-[rgba(55,245,220,0.18)] bg-[#010604] p-4 text-xs font-black uppercase text-[var(--hud-neon)] max-md:hidden">
+            <div className="grid grid-cols-[1.1fr_80px_0.9fr_1.1fr_1.3fr] border-b border-[rgba(55,245,220,0.18)] bg-[#010604] p-4 text-xs font-black uppercase text-[var(--hud-neon)] max-md:hidden">
               <span>Modulo</span>
               <span>Horas</span>
               <span>Foco</span>
               <span>Entregable</span>
+              <span>Trabajo final</span>
             </div>
             {moduleMatrix.map((item) => (
-              <article key={item.id} className="grid gap-3 border-b border-[rgba(55,245,220,0.12)] p-4 md:grid-cols-[1.2fr_90px_1fr_1.4fr]">
+              <article key={item.id} className="grid gap-3 border-b border-[rgba(55,245,220,0.12)] p-4 md:grid-cols-[1.1fr_80px_0.9fr_1.1fr_1.3fr]">
                 <h3 className="font-black text-white">{item.title}</h3>
-                <strong className="text-[var(--hud-gold)]">{item.hours}h</strong>
+                <strong className="text-[var(--hud-lime)]">{item.hours}h</strong>
                 <p className="text-sm font-semibold text-[var(--hud-muted)]">{item.focus}</p>
                 <p className="text-sm leading-6 text-[var(--hud-muted)]">{item.deliverable}</p>
+                <p className="text-sm leading-6 text-[var(--hud-muted)]">{item.finalWork}</p>
               </article>
             ))}
             <div className="flex flex-wrap items-center justify-between gap-3 bg-[rgba(25,255,122,0.08)] p-4">
@@ -470,11 +557,15 @@ export default function BimLeanBiDiplomadoPage() {
               title="El valor no es solo asistir: es demostrar lo que puedes producir."
               description="La certificacion se presenta con respaldo AECODE, Autodesk Training Center y Colegio de Ingenieros del Peru. Los nombres finales de los 04 certificados deben confirmarse antes de publicacion comercial."
             />
+            <div className="mt-6 grid gap-3 md:grid-cols-2">
+              <InfoPanel label="Modelo academico" value={bimLeanBiProgram.academicStructure.description} />
+              <InfoPanel label="Aprobacion global" value={bimLeanBiProgram.academicStructure.globalCertificationRule} highlight />
+            </div>
             <div className="mt-6 grid gap-3">
               {bimLeanBiProgram.certifications.map((certification) => (
                 <article key={certification.title} className="hud-card rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <BadgeCheck className="mt-1 h-5 w-5 flex-none text-[var(--hud-gold)]" />
+                    <BadgeCheck className="mt-1 h-5 w-5 flex-none text-[var(--hud-lime)]" />
                     <div>
                       <h3 className="text-lg font-black text-white">{certification.title}</h3>
                       <p className="mt-1 text-sm leading-6 text-[var(--hud-muted)]">{certification.detail}</p>
@@ -531,7 +622,7 @@ export default function BimLeanBiDiplomadoPage() {
       <section className="py-14">
         <div className="hud-panel mx-auto flex w-[min(1220px,calc(100%-32px))] flex-col gap-6 rounded-lg p-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--hud-neon)]">AECODE Training</p>
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--hud-neon)]">AECODE TRAINING</p>
             <h2 className="mt-2 max-w-3xl text-3xl font-black text-white">Una ruta para controlar obra con BIM, Lean, BI e IA sin perder trazabilidad.</h2>
           </div>
           <a
@@ -587,14 +678,14 @@ function NeuralCommandPanel({ activeModule }: { activeModule: BimLeanBiModuleVie
             <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[var(--hud-neon)]">AI cockpit</p>
             <h2 className="mt-1 text-2xl font-black text-white">Mapa de control BIM Lean BI</h2>
           </div>
-          <ShieldCheck className="h-8 w-8 text-[var(--hud-gold)]" />
+          <ShieldCheck className="h-8 w-8 text-[var(--hud-neon)]" />
         </div>
         <div className="absolute bottom-5 left-5 right-5 grid gap-3 md:grid-cols-2">
           {[
             { label: "Modulo activo", value: activeModule.shortTitle, icon: Target },
             { label: "Horas", value: `${activeModule.hours}h`, icon: LineChart },
-            { label: "Foco", value: activeModule.focus, icon: Database },
-            { label: "Salida", value: activeModule.deliverable, icon: ClipboardCheck }
+            { label: "Skills", value: activeModule.skills.slice(0, 2).join(" + "), icon: Database },
+            { label: "Trabajo final", value: activeModule.finalWork, icon: ClipboardCheck }
           ].map((item) => {
             const Icon = item.icon;
             return (
@@ -623,16 +714,62 @@ function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title
   );
 }
 
+function ModuleModePanel({ module, mode }: { module: BimLeanBiModuleView; mode: ViewMode }) {
+  if (mode === "skills") {
+    return (
+      <div className="mt-4 grid gap-4 lg:grid-cols-[0.82fr_1.18fr]">
+        <article className="rounded-lg border border-[rgba(25,255,122,0.24)] bg-[rgba(25,255,122,0.08)] p-4">
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--hud-neon)]">Skills que obtendras</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {module.skills.map((skill) => (
+              <span key={skill} className="hud-chip rounded-md px-3 py-2 text-xs font-black">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </article>
+        <article className="rounded-lg border border-[rgba(55,245,220,0.2)] bg-[rgba(3,28,22,0.68)] p-4">
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--hud-cyan)]">Competencias verificables</p>
+          <ul className="mt-3 grid gap-2">
+            {module.competencies.map((competency) => (
+              <li key={competency} className="grid grid-cols-[22px_1fr] gap-2 text-sm leading-5 text-[var(--hud-muted)]">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 text-[var(--hud-neon)]" />
+                <span>{competency}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      </div>
+    );
+  }
+
+  if (mode === "evaluacion") {
+    return (
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <InfoPanel label="Trabajo final del modulo" value={module.finalWork} highlight />
+        <InfoPanel label="Criterio de aprobacion" value={module.certificationCriterion} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 rounded-lg border border-[rgba(55,245,220,0.18)] bg-[#020706]/55 p-4">
+      <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--hud-cyan)]">Enfoque del modulo</p>
+      <p className="mt-2 text-sm font-semibold leading-6 text-[var(--hud-muted)]">{module.question}</p>
+    </div>
+  );
+}
+
 function InfoPanel({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
   return (
     <article
       className={`rounded-lg border p-4 ${
         highlight
-          ? "border-[rgba(227,176,92,0.35)] bg-[rgba(217,130,51,0.12)]"
+          ? "border-[rgba(25,255,122,0.35)] bg-[rgba(25,255,122,0.12)]"
           : "border-[rgba(55,245,220,0.2)] bg-[rgba(3,28,22,0.68)]"
       }`}
     >
-      <p className={`text-xs font-black uppercase tracking-[0.1em] ${highlight ? "text-[var(--hud-gold)]" : "text-[var(--hud-cyan)]"}`}>{label}</p>
+      <p className={`text-xs font-black uppercase tracking-[0.1em] ${highlight ? "text-[var(--hud-lime)]" : "text-[var(--hud-cyan)]"}`}>{label}</p>
       <p className="mt-2 text-sm font-semibold leading-6 text-[var(--hud-muted)]">{value}</p>
     </article>
   );

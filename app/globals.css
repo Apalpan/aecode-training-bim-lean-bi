@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,9 +19,9 @@
   --hud-neon: #19ff7a;
   --hud-cyan: #37f5dc;
   --hud-mint: #c7ffe8;
-  --hud-copper: #d98233;
-  --hud-gold: #e3b05c;
-  --hud-cream: #fff3da;
+  --hud-electric: #16f28a;
+  --hud-lime: #7cffb2;
+  --hud-cream: #dfffee;
   --hud-black: #010604;
 }
 
@@ -34,7 +36,7 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  font-family: Inter, "Plus Jakarta Sans", system-ui, sans-serif;
+  font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
   background: var(--hud-bg-deep);
   color: var(--hud-text);
 }
@@ -73,7 +75,7 @@ a {
   background:
     linear-gradient(115deg, rgba(25, 255, 122, 0.08), transparent 28%),
     linear-gradient(245deg, rgba(55, 245, 220, 0.08), transparent 26%),
-    linear-gradient(180deg, rgba(217, 130, 51, 0.06), transparent 44%);
+    linear-gradient(180deg, rgba(124, 255, 178, 0.06), transparent 44%);
 }
 
 .hud-shell::after {
@@ -155,9 +157,9 @@ a {
   color: var(--hud-mint);
 }
 
-.hud-chip-gold {
-  border: 1px solid rgba(227, 176, 92, 0.34);
-  background: rgba(217, 130, 51, 0.12);
+.hud-chip-accent {
+  border: 1px solid rgba(124, 255, 178, 0.36);
+  background: rgba(25, 255, 122, 0.12);
   color: var(--hud-cream);
 }
 
@@ -167,10 +169,10 @@ a {
 }
 
 .hud-button-primary {
-  border: 1px solid rgba(227, 176, 92, 0.64);
-  background: linear-gradient(135deg, var(--hud-copper), var(--hud-gold));
-  color: #120b05;
-  box-shadow: 0 16px 42px rgba(217, 130, 51, 0.24), 0 0 28px rgba(227, 176, 92, 0.13);
+  border: 1px solid rgba(25, 255, 122, 0.62);
+  background: linear-gradient(135deg, var(--hud-electric), #37f5dc);
+  color: #00120d;
+  box-shadow: 0 16px 42px rgba(25, 255, 122, 0.22), 0 0 28px rgba(55, 245, 220, 0.14);
 }
 
 .hud-button-secondary {
@@ -243,9 +245,9 @@ a {
   box-shadow: 0 0 22px rgba(55, 245, 220, 0.38);
 }
 
-.hud-node[data-tone="gold"] {
-  background: rgba(227, 176, 92, 0.94);
-  box-shadow: 0 0 22px rgba(227, 176, 92, 0.32);
+.hud-node[data-tone="lime"] {
+  background: rgba(124, 255, 178, 0.94);
+  box-shadow: 0 0 22px rgba(124, 255, 178, 0.32);
 }
 
 .hud-link {
