@@ -1,39 +1,73 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * AECODE Training — tokens surfaced to Tailwind as CSS-variable-driven colors.
+ * Never hardcode a hex in a component; use these semantic names or var(--token).
+ */
 const config: Config = {
-  content: ["./app/**/*.{js,ts,jsx,tsx,mdx}", "./data/**/*.{js,ts,jsx,tsx,mdx}", "./lib/**/*.{js,ts,jsx,tsx,mdx}"],
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./data/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}"
+  ],
   theme: {
     extend: {
       colors: {
-        aecode: {
-          bg: "#0E1121",
-          bg2: "#0D0F1F",
-          nav: "#0C0F29",
-          card: "#222341",
-          border: "#3A4065",
-          text: "#EEF3F8",
-          muted: "#A2B4CB",
-          lavender: "#C5CFFA",
-          indigo: "#4A3AC1",
-          violet: "#7C7EDF",
-          violet2: "#8F60EA",
-          blue: "#4465EE",
-          green: "#47CF78",
-          mint: "#95E3B1",
-          light: "#EDEBF9",
-          darkText: "#2A2C3A",
-          amber: "#F8B84E",
-          coral: "#FF7A66",
-          cyan: "#69D2FF"
+        primary: {
+          DEFAULT: "var(--primary)",
+          hover: "var(--primary-hover)",
+          active: "var(--primary-active)",
+          50: "var(--primary-050)",
+          100: "var(--primary-100)",
+          200: "var(--primary-200)"
+        },
+        bg: "var(--bg)",
+        surface: {
+          DEFAULT: "var(--surface)",
+          2: "var(--surface-2)",
+          3: "var(--surface-3)"
+        },
+        line: {
+          DEFAULT: "var(--border)",
+          strong: "var(--border-strong)"
+        },
+        ink: {
+          DEFAULT: "var(--text)",
+          2: "var(--text-2)",
+          3: "var(--text-3)"
+        },
+        aec: {
+          progress: "var(--aec-progress)",
+          risk: "var(--aec-risk)",
+          danger: "var(--aec-danger)",
+          success: "var(--aec-success)",
+          ai: "var(--aec-ai)"
         }
       },
       fontFamily: {
-        sans: ["Inter", "Plus Jakarta Sans", "system-ui", "sans-serif"],
-        display: ["Space Grotesk", "Inter", "system-ui", "sans-serif"]
+        sans: ["var(--font-body)"],
+        display: ["var(--font-display)"],
+        mono: ["var(--font-mono)"]
+      },
+      borderRadius: {
+        xs: "var(--r-xs)",
+        sm: "var(--r-sm)",
+        md: "var(--r-md)",
+        lg: "var(--r-lg)",
+        xl: "var(--r-xl)"
+      },
+      maxWidth: {
+        shell: "var(--max-w)"
       },
       boxShadow: {
-        glow: "0 24px 90px rgba(124, 126, 223, 0.24)",
-        mint: "0 18px 60px rgba(71, 207, 120, 0.18)"
+        card: "var(--shadow-card)",
+        elevated: "var(--shadow-elevated)",
+        glow: "var(--shadow-glow)"
+      },
+      transitionTimingFunction: {
+        house: "cubic-bezier(0.23, 1, 0.32, 1)",
+        spring: "cubic-bezier(0.34, 1.4, 0.64, 1)"
       }
     }
   },
